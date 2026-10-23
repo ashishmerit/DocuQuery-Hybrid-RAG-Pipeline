@@ -1,0 +1,34 @@
+# Secrets and environment variables
+.env
+.env.*
+ !.env.example
+#Allow nested example files
+# Allow nested example files
+!**/.env.example
+
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+
+# Node.js
+node_modules/
+dist/
+
+# Uploaded documents and generated indexes
+uploads/
+data/
+indexes/
+*.faiss
+*.pkl
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
+
+#Local files
+developer_notes.md
+project_progress.md
