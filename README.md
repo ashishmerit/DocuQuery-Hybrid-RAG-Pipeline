@@ -68,74 +68,10 @@ The project roadmap will extend ingestion with the following independently testa
 
 The development setup was exercised by the project author with Python 3.12, Node.js 24, and npm 11. Versions can differ, but use a supported Python environment if a future ML dependency requires it.
 
-## Run locally (Windows PowerShell)
 
-### 1. Clone the repository
 
-```powershell
-git clone <your-github-repository-url>
-cd docuquery-day1
-```
 
-If you already have the project folder, start from that directory instead.
-
-### 2. Start the backend
-
-```powershell
-cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-Copy-Item .env.example .env
-python -m pytest -q
-python -m uvicorn app.main:app --reload
-```
-
-Backend URLs:
-
-- Health check: <http://localhost:8000/health>
-- Interactive API docs: <http://localhost:8000/docs>
-
-Run tests from the `backend` directory with `python -m pytest -q`. Using `python -m pytest` explicitly runs pytest under the active interpreter and avoids some Windows import-path issues that can occur with the standalone `pytest` command.
-
-### 3. Start the frontend
-
-Open a second PowerShell terminal at the repository root:
-
-```powershell
-cd frontend
-npm install
-Copy-Item .env.example .env
-npm run dev
-```
-
-Open the local address printed by Vite, usually <http://localhost:5173>.
-
-### 4. Try the Day 1 workflow
-
-1. Keep both backend and frontend running.
-2. Open the frontend in your browser.
-3. Upload a text-based PDF.
-4. Check the displayed filename, page/chunk information, and extracted passages.
-5. Try a non-PDF file or a PDF containing no extractable text to inspect the error handling.
-
-No LLM API key is required for Day 1.
-
-## Configuration
-
-Backend configuration is read from `backend/.env` using Pydantic Settings. See `backend/.env.example` for the available values.
-
-| Setting | Purpose | Default |
-|---|---|---:|
-| `MAX_UPLOAD_MB` | Maximum upload size in megabytes | `15` |
-| `CHUNK_SIZE` | Maximum chunk length in characters | `900` |
-| `CHUNK_OVERLAP` | Shared characters between adjacent chunks | `150` |
-| `CORS_ORIGINS` | Comma-separated frontend origins allowed by the API | `http://localhost:5173` |
-
-Chunk size and overlap are measured in **characters**, not tokens.
-
-## API endpoints implemented today
+## API endpoints implemented
 
 | Method | Endpoint | Purpose |
 |---|---|---|
@@ -163,21 +99,7 @@ The author’s Day 1 run reported **8 passing tests**. A deprecation warning fro
 - Authentication, multi-user authorization, and production document isolation are not implemented.
 - Production deployment and persistent index/storage behavior are not yet configured.
 
-## Development roadmap
 
-- [x] Day 1 — Foundation, PDF ingestion, page metadata, chunking, initial frontend, tests
-- [ ] Day 2 — Dense retrieval, BM25, and evaluation query set
-- [ ] Day 3 — Hybrid retrieval with RRF and cross-encoder reranking
-- [ ] Day 4 — Grounded LLM generation, citations, and insufficient-evidence behavior
-- [ ] Day 5 — Complete frontend workflow and document management
-- [ ] Day 6 — Integration tests, retrieval evaluation, latency/cost measurements
-- [ ] Day 7 — Deployment, documentation, demo, and interview preparation
-
-Milestones are marked complete only after their acceptance checks have been run; roadmap checkboxes reflect the author’s latest recorded progress.
-
-## Learning notes
-
-The internal `day1_concepts_guide.md` is a study guide for the concepts implemented in this milestone. `developer_notes.md` and `project_progress.md` are development notes and may be kept out of the public repository if preferred.
 
 ## License
 
