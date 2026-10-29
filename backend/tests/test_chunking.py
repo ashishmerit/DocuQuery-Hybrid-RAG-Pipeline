@@ -18,3 +18,16 @@ def test_chunking_rejects_invalid_overlap():
 
 def test_empty_page_has_no_chunks():
     assert chunk_page_text("  \n  ", document_id="doc-1", page_number=1) == []
+
+def test_chunking_rejects_non_positive_chunk_size():
+    with pytest.raises(
+        ValueError,
+        match="chunk_size must be positive",
+    ):
+        chunk_page_text(
+            "hello",
+            document_id="doc-1",
+            page_number=1,
+            chunk_size=0,
+            overlap=0,
+        )

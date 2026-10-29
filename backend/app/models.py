@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -21,3 +23,12 @@ class IngestionResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: str
     app: str
+
+
+class RetrievalResult(BaseModel):
+    """One ranked passage returned by a retrieval method."""
+
+    chunk: Chunk
+    score: float
+    rank: int = Field(ge=1)
+    retriever: Literal["dense", "bm25"]

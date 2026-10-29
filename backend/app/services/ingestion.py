@@ -31,7 +31,7 @@ def chunk_page_text(
     overlap: int | None = None,
 ) -> list[Chunk]:
     """Split one page into overlapping character chunks with source metadata."""
-    size = chunk_size or settings.chunk_size
+    size = settings.chunk_size if chunk_size is None else chunk_size
     overlap_size = settings.chunk_overlap if overlap is None else overlap
     if size < 1:
         raise ValueError("chunk_size must be positive")

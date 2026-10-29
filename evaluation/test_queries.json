@@ -1,0 +1,21 @@
+
+[
+  {"query_id":"q01","query":"What does retrieval augmented generation do?","relevant_chunk_ids":["rag-guide-p1-c1"]},
+  {"query_id":"q02","query":"Why use overlapping chunks and retain page numbers?","relevant_chunk_ids":["rag-guide-p1-c2"]},
+  {"query_id":"q03","query":"How does hybrid search combine lexical and semantic retrieval?","relevant_chunk_ids":["rag-guide-p2-c1"]},
+  {"query_id":"q04","query":"What is BM25 and when is it useful for exact terms?","relevant_chunk_ids":["ml-guide-p2-c1","rag-guide-p2-c1"]},
+  {"query_id":"q05","query":"What is FAISS used for in vector search?","relevant_chunk_ids":["ml-guide-p1-c2"]},
+  {"query_id":"q06","query":"How does reciprocal rank fusion merge result lists?","relevant_chunk_ids":["rag-guide-p2-c2"]},
+  {"query_id":"q07","query":"Why is a cross encoder used after candidate retrieval?","relevant_chunk_ids":["rag-guide-p3-c1"]},
+  {"query_id":"q08","query":"How should the system avoid fabricated document citations?","relevant_chunk_ids":["rag-guide-p3-c2"]},
+  {"query_id":"q09","query":"What is FastAPI responsible for in this application?","relevant_chunk_ids":["api-guide-p1-c1"]},
+  {"query_id":"q10","query":"Which HTTP status code means a resource was created?","relevant_chunk_ids":["api-guide-p1-c2"]},
+  {"query_id":"q11","query":"Why does a browser need CORS permission for localhost ports?","relevant_chunk_ids":["api-guide-p2-c1"]},
+  {"query_id":"q12","query":"How do Sentence Transformers represent text for semantic search?","relevant_chunk_ids":["ml-guide-p1-c1"]},
+  {"query_id":"q13","query":"What is cosine similarity calculated from normalized vectors?","relevant_chunk_ids":["ml-guide-p1-c2"]},
+  {"query_id":"q14","query":"Define Recall at K for retrieval evaluation.","relevant_chunk_ids":["ml-guide-p2-c2"]},
+  {"query_id":"q15","query":"How is mean reciprocal rank calculated?","relevant_chunk_ids":["ml-guide-p2-c2"]},
+  {"query_id":"q16","query":"What causes BM25 and vector scores to be incomparable?","relevant_chunk_ids":["ml-guide-p2-c1","rag-guide-p2-c2"]},
+  {"query_id":"q17","query":"Why should each retrieved passage preserve its document id and page number?","relevant_chunk_ids":["rag-guide-p1-c2","rag-guide-p3-c2"]},
+  {"query_id":"q18","query":"What does Pydantic validate in a FastAPI service?","relevant_chunk_ids":["api-guide-p1-c1"]}
+]

@@ -1,0 +1,106 @@
+[
+  {
+    "document_id": "rag-guide",
+    "chunk_id": "rag-guide-p1-c1",
+    "page_number": 1,
+    "text": "Retrieval-Augmented Generation (RAG) combines information retrieval with a language model. A retriever selects relevant passages from an external knowledge source, and the language model uses those passages as context to answer a question. RAG can ground responses in documents that were not part of the model's training data.",
+    "start_char": 0,
+    "end_char": 326
+  },
+  {
+    "document_id": "rag-guide",
+    "chunk_id": "rag-guide-p1-c2",
+    "page_number": 1,
+    "text": "Chunking divides long documents into smaller passages before indexing. Overlapping chunks preserve some context at boundaries, while page numbers and document identifiers allow retrieved passages to be traced back to their source. Very small chunks may lose context; very large chunks may reduce retrieval precision.",
+    "start_char": 0,
+    "end_char": 316
+  },
+  {
+    "document_id": "rag-guide",
+    "chunk_id": "rag-guide-p2-c1",
+    "page_number": 2,
+    "text": "Hybrid retrieval combines lexical keyword search with dense semantic search. BM25 ranks documents using query-term statistics and is useful for exact terms, identifiers, and rare keywords. Dense retrieval embeds queries and passages as vectors, helping retrieve semantically related text even when wording differs.",
+    "start_char": 0,
+    "end_char": 314
+  },
+  {
+    "document_id": "rag-guide",
+    "chunk_id": "rag-guide-p2-c2",
+    "page_number": 2,
+    "text": "Reciprocal Rank Fusion (RRF) merges ranked result lists by adding a reciprocal-rank contribution for each result. It combines rankings without requiring BM25 scores and vector similarity scores to share the same numeric scale. RRF is a rank-fusion method, not a language model.",
+    "start_char": 0,
+    "end_char": 277
+  },
+  {
+    "document_id": "rag-guide",
+    "chunk_id": "rag-guide-p3-c1",
+    "page_number": 3,
+    "text": "A cross-encoder reranker receives a query and a candidate passage together and scores their relevance jointly. It is usually applied after a faster retriever has selected candidates because scoring every passage with a cross-encoder is expensive. Reranking changes candidate order; it does not generate the final answer.",
+    "start_char": 0,
+    "end_char": 320
+  },
+  {
+    "document_id": "rag-guide",
+    "chunk_id": "rag-guide-p3-c2",
+    "page_number": 3,
+    "text": "Grounded answers should cite real retrieved source chunks and preserve document names and page numbers. Citation metadata must be produced from the application's actual source records rather than invented by the language model. If the retrieved evidence does not support an answer, the system should state that the available documents are insufficient.",
+    "start_char": 0,
+    "end_char": 352
+  },
+  {
+    "document_id": "api-guide",
+    "chunk_id": "api-guide-p1-c1",
+    "page_number": 1,
+    "text": "FastAPI is a Python framework for building HTTP APIs. Route handlers receive requests, validate inputs, call application services, and return structured responses. Keeping business logic in services rather than route functions makes the application easier to test and maintain. Pydantic models define and validate request and response data.",
+    "start_char": 0,
+    "end_char": 340
+  },
+  {
+    "document_id": "api-guide",
+    "chunk_id": "api-guide-p1-c2",
+    "page_number": 1,
+    "text": "HTTP status codes communicate the result of an API request. A 200 response indicates success, 201 indicates that a resource was created, 400 indicates a bad request, 404 indicates that a resource was not found, and 500 indicates an unexpected server error. APIs should return clear errors without exposing secrets or stack traces.",
+    "start_char": 0,
+    "end_char": 330
+  },
+  {
+    "document_id": "api-guide",
+    "chunk_id": "api-guide-p2-c1",
+    "page_number": 2,
+    "text": "Cross-Origin Resource Sharing (CORS) is a browser security mechanism that controls which origins may read responses from an API. A development frontend running on localhost port 5173 and a backend on port 8000 have different origins. The backend must explicitly allow the frontend origin for browser requests to succeed.",
+    "start_char": 0,
+    "end_char": 320
+  },
+  {
+    "document_id": "ml-guide",
+    "chunk_id": "ml-guide-p1-c1",
+    "page_number": 1,
+    "text": "Sentence Transformers creates dense vector embeddings for sentences, passages, and queries. A bi-encoder encodes a query and each passage separately, allowing passage vectors to be precomputed and searched efficiently. Embeddings are numerical representations intended to place semantically related texts near one another in vector space.",
+    "start_char": 0,
+    "end_char": 338
+  },
+  {
+    "document_id": "ml-guide",
+    "chunk_id": "ml-guide-p1-c2",
+    "page_number": 1,
+    "text": "FAISS is a library for efficient similarity search over dense vectors. IndexFlatIP performs exact inner-product search. If query and passage vectors are L2-normalized, their inner product equals cosine similarity. FAISS returns vector positions and similarity scores; the application must map each position back to the original chunk metadata.",
+    "start_char": 0,
+    "end_char": 343
+  },
+  {
+    "document_id": "ml-guide",
+    "chunk_id": "ml-guide-p2-c1",
+    "page_number": 2,
+    "text": "BM25 is a lexical ranking function based on term frequency, inverse document frequency, and document length normalization. It is often strong when a query includes exact names, technical identifiers, or rare words. BM25 scores are specific to the corpus and query, so they should not be directly compared numerically with cosine similarity scores.",
+    "start_char": 0,
+    "end_char": 347
+  },
+  {
+    "document_id": "ml-guide",
+    "chunk_id": "ml-guide-p2-c2",
+    "page_number": 2,
+    "text": "Recall at K measures the fraction of known relevant passages that appear in the first K retrieved results. Mean Reciprocal Rank (MRR) averages the reciprocal of the rank of the first relevant result for each query. Both metrics depend on a labelled evaluation set and should be reported with its size and limitations.",
+    "start_char": 0,
+    "end_char": 317
+  }
+]

@@ -2,7 +2,14 @@
 
 **DocuQuery** is a full-stack document question-answering application being built to demonstrate a practical Retrieval-Augmented Generation (RAG) pipeline. The planned pipeline combines keyword and semantic retrieval, Reciprocal Rank Fusion (RRF), cross-encoder reranking, and evidence-grounded LLM answers with source citations.
 
-> **Project status: Day 1 — Foundation and PDF ingestion.** The current implementation supports PDF upload, validation, page-aware text extraction, overlapping chunk creation, and a React interface for inspecting the result. Retrieval, reranking, LLM generation, persistence, and deployment are planned milestones—not completed features.
+> **Foundation and PDF ingestion.** The current implementation supports PDF upload, validation, page-aware text extraction, overlapping chunk creation, and a React interface for inspecting the result. Retrieval, reranking, LLM generation, persistence, and deployment are planned milestones—not completed features.
+
+> **Dense and keyword retrieval implementation in progress.**
+> The project includes PDF ingestion and page-aware chunking, plus independently
+> testable Sentence Transformers/FAISS dense retrieval and BM25 keyword retrieval.
+> Day 2 is complete only after local dependency installation, tests, and evaluation
+> have been verified. RRF, reranking, LLM generation, persistence, and deployment
+> remain future milestones.
 
 ## Current features
 
@@ -13,6 +20,13 @@
 - **Source metadata** on every chunk: document ID, chunk ID, page number, and character offsets.
 - **React + Vite frontend** for uploading a PDF, displaying loading/errors, and inspecting extracted chunks.
 - **Automated backend tests** for health checks, ingestion, invalid files, and chunking behavior.
+
+- Dense retrieval using Sentence Transformers and FAISS.
+- BM25 lexical retrieval using `rank-bm25`.
+- A common retrieval result model preserving source chunk metadata.
+- Optional document-ID filtering in both retrieval methods.
+- A manually curated corpus with 18 labelled evaluation questions.
+- An evaluation script reporting Recall@5, MRR, and mean query latency.
 
 ## Architecture today
 
@@ -68,10 +82,74 @@ The project roadmap will extend ingestion with the following independently testa
 
 The development setup was exercised by the project author with Python 3.12, Node.js 24, and npm 11. Versions can differ, but use a supported Python environment if a future ML dependency requires it.
 
+## Run locally (Windows PowerShell)
 
+### 1. Clone the repository
 
+```powershell
+git clone <your-github-repository-url>
+cd docuquery-day1
+```
 
-## API endpoints implemented
+If you already have the project folder, start from that directory instead.
+
+### 2. Start the backend
+
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+Copy-Item .env.example .env
+python -m pytest -q
+python -m uvicorn app.main:app --reload
+```
+
+Backend URLs:
+
+- Health check: <http://localhost:8000/health>
+- Interactive API docs: <http://localhost:8000/docs>
+
+Run tests from the `backend` directory with `python -m pytest -q`. Using `python -m pytest` explicitly runs pytest under the active interpreter and avoids some Windows import-path issues that can occur with the standalone `pytest` command.
+
+### 3. Start the frontend
+
+Open a second PowerShell terminal at the repository root:
+
+```powershell
+cd frontend
+npm install
+Copy-Item .env.example .env
+npm run dev
+```
+
+Open the local address printed by Vite, usually <http://localhost:5173>.
+
+### 4. Try the Day 1 workflow
+
+1. Keep both backend and frontend running.
+2. Open the frontend in your browser.
+3. Upload a text-based PDF.
+4. Check the displayed filename, page/chunk information, and extracted passages.
+5. Try a non-PDF file or a PDF containing no extractable text to inspect the error handling.
+
+No LLM API key is required for Day 1.
+
+## Configuration
+
+Backend configuration is read from `backend/.env` using Pydantic Settings. See `backend/.env.example` for the available values.
+
+| Setting | Purpose | Default |
+|---|---|---:|
+| `MAX_UPLOAD_MB` | Maximum upload size in megabytes | `15` |
+| `CHUNK_SIZE` | Maximum chunk length in characters | `900` |
+| `CHUNK_OVERLAP` | Shared characters between adjacent chunks | `150` |
+| `CORS_ORIGINS` | Comma-separated frontend origins allowed by the API | `http://localhost:5173` |
+
+Chunk size and overlap are measured in **characters**, not tokens.
+
+## API endpoints implemented today
 
 | Method | Endpoint | Purpose |
 |---|---|---|
@@ -88,7 +166,14 @@ From `backend/` with the virtual environment activated:
 python -m pytest -q
 ```
 
-The author’s Day 1 run reported **8 passing tests**. A deprecation warning from the earlier PDF import was addressed by using the current `pymupdf` module name; rerun the tests in your environment to verify the current checkout.
+## retrieval and evaluation
+
+Install the updated backend dependencies from `backend/`:
+
+```powershell
+python -m pip install -r requirements.txt
+python -m pytest -q
+
 
 ## Current limitations
 
@@ -98,6 +183,8 @@ The author’s Day 1 run reported **8 passing tests**. A deprecation warning fro
 - Chunking is character-based and page-local; it does not cross page boundaries.
 - Authentication, multi-user authorization, and production document isolation are not implemented.
 - Production deployment and persistent index/storage behavior are not yet configured.
+
+
 
 
 
