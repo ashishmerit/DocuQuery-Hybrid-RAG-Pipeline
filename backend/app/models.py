@@ -25,10 +25,12 @@ class HealthResponse(BaseModel):
     app: str
 
 
+from typing import Literal
+
 class RetrievalResult(BaseModel):
-    """One ranked passage returned by a retrieval method."""
+    """A ranked retrieval result with original source metadata."""
 
     chunk: Chunk
     score: float
     rank: int = Field(ge=1)
-    retriever: Literal["dense", "bm25"]
+    retriever: Literal["dense", "bm25", "hybrid", "reranked"]

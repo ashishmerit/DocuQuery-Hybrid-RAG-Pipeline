@@ -27,5 +27,9 @@ class Settings(BaseSettings):
             if origin.strip()
         ]
 
+    reranker_model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    rrf_k: int = 60
+    rerank_candidate_k: int = 20
+
 
 settings = Settings()
