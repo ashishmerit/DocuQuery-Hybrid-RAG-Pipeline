@@ -1,11 +1,16 @@
 import { useState } from 'react'
-import { uploadPdf } from './services/api.js'
+import { uploadPdf, queryDocument } from './services/api.js'
 
 export default function App() {
   const [file, setFile] = useState(null)
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const [question, setQuestion] = useState('')
+  const [queryLoading, setQueryLoading] = useState(false)
+  const [queryError, setQueryError] = useState('')
+  const [queryResult, setQueryResult] = useState(null)
 
   async function handleUpload(event) {
     event.preventDefault()
@@ -49,9 +54,102 @@ export default function App() {
           <div className="success-heading"><span className="success-check">✓</span><div><strong>Document processed</strong><p>Your PDF text is ready for the next pipeline stage.</p></div></div>
           <div className="stats"><div><span>Pages</span><strong>{result.page_count}</strong></div><div><span>Chunks</span><strong>{result.chunk_count}</strong></div><div><span>Source</span><strong className="source-value">{result.filename}</strong></div></div>
           <div className="chunk-list"><h3>Extracted passages</h3>{result.chunks.slice(0, 8).map(chunk => <article className="chunk" key={chunk.chunk_id}><div className="chunk-meta"><span>PAGE {chunk.page_number}</span><code>{chunk.chunk_id}</code></div><p>{chunk.text}</p></article>)}{result.chunks.length > 8 && <p className="more-note">Showing 8 of {result.chunks.length} chunks.</p>}</div>
+          
         </section>}
+          <section className="query-panel">
+            <h3>Ask your document</h3>
+
+            <form onSubmit={handleQuestion}>
+              <textarea
+                value={question}
+                onChange={(event) => setQuestion(event.target.value)}
+                placeholder="Ask a question about this PDF..."
+                rows={3}
+              />
+
+              <button
+                className="primary-button"
+                type="submit"
+                disabled={queryLoading || !question.trim()}
+              >
+                {queryLoading ? 'Generating answer…' : 'Ask question'}
+              </button>
+            </form>
+
+            {queryError && (
+              <div className="message error" role="alert">
+                {queryError}
+              </div>
+            )}
+
+            {queryResult && (
+              <div className="answer-result" aria-live="polite">
+                <strong>
+                  {queryResult.status === 'answered'
+                    ? 'Answer'
+                    : 'Insufficient evidence'}
+                </strong>
+
+                <p>{queryResult.answer}</p>
+
+                {queryResult.citations?.length > 0 && (
+                  <div className="citation-list">
+                    <h4>Sources</h4>
+
+                    {queryResult.citations.map((citation) => (
+                      <article
+                        className="chunk"
+                        key={citation.citation_id}
+                      >
+                        <div className="chunk-meta">
+                          <span>
+                            {citation.document_name} · PAGE{' '}
+                            {citation.page_number}
+                          </span>
+                          <code>{citation.citation_id}</code>
+                        </div>
+
+                        <p>{citation.excerpt}</p>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
       </section>
       <footer><span>DOCUQUERY / MVP</span><span>Evidence first. Answers you can inspect.</span></footer>
     </main>
   )
 }
+
+  async function handleQuestion(event) {
+    event.preventDefault()
+
+    if (!result?.document_id) {
+      setQueryError('Upload a PDF before asking a question.')
+      return
+    }
+
+    if (!question.trim()) {
+      setQueryError('Enter a question.')
+      return
+    }
+
+    setQueryLoading(true)
+    setQueryError('')
+    setQueryResult(null)
+
+    try {
+      const answer = await queryDocument({
+        question: question.trim(),
+        documentId: result.document_id,
+      })
+
+      setQueryResult(answer)
+    } catch (err) {
+      setQueryError(err.message || 'Unable to generate an answer.')
+    } finally {
+      setQueryLoading(false)
+    }
+  }

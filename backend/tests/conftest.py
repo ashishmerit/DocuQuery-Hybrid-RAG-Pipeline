@@ -3,6 +3,14 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.services.document_store import document_store
+
+
+@pytest.fixture(autouse=True)
+def reset_document_store():
+    document_store.clear()
+    yield
+    document_store.clear()
 
 
 @pytest.fixture
@@ -14,9 +22,15 @@ def client():
 def sample_pdf_bytes():
     doc = fitz.open()
     page1 = doc.new_page()
-    page1.insert_text((72, 72), "DocuQuery extracts searchable text from PDF pages.")
+    page1.insert_text(
+        (72, 72),
+        "DocuQuery extracts searchable text from PDF pages."
+    )
     page2 = doc.new_page()
-    page2.insert_text((72, 72), "Page two contains additional source evidence.")
+    page2.insert_text(
+        (72, 72),
+        "Page two contains additional source evidence."
+    )
     data = doc.tobytes()
     doc.close()
     return data
