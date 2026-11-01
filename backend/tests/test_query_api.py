@@ -13,6 +13,8 @@ from app.services.llm_client import (
     LLMTimeoutError,
 )
 from app.services.llm_client import GeminiClient
+from app.services.llm_client import LLMTimeoutError
+from app.services.llm_client import LLMProviderError
 
 @pytest.fixture(autouse=True)
 def reset_documents():
@@ -77,10 +79,14 @@ def test_query_returns_answer_and_citation(client, monkeypatch):
     patch_retrieval(monkeypatch, result)
 
     monkeypatch.setattr(
-        query,
-        "GeminiClient",
-        lambda: FakeLLMClient(...),
-    )
+    query,
+    "GeminiClient",
+    lambda: FakeLLMClient({
+        "answer": "DocuQuery uses hybrid retrieval.",
+        "citation_ids": ["S1"],
+        "insufficient_evidence": False,
+    }),
+)
     response = client.post(
         "/api/query",
         json={
@@ -125,10 +131,10 @@ def test_query_maps_missing_api_key_to_503(client, monkeypatch):
     patch_retrieval(monkeypatch, result)
 
     monkeypatch.setattr(
-        query,
-        "GeminiClient",
-        lambda: FakeLLMClient(...),
-)
+    query,
+    "GeminiClient",
+    lambda: GeminiClient(api_key=""),
+    )
 
     response = client.post(
         "/api/query",
@@ -149,10 +155,12 @@ async def test_provider_errors_are_mapped_by_api(client, monkeypatch):
     patch_retrieval(monkeypatch, result)
 
     monkeypatch.setattr(
-        query,
-        "GeminiClient",
-        lambda: FakeLLMClient(...),
-    )
+    query,
+    "GeminiClient",
+    lambda: FakeLLMClient(
+        error=LLMProviderError("provider failed")
+    ),
+)
 
     response = client.post(
         "/api/query",
@@ -172,9 +180,11 @@ def test_timeout_is_mapped_by_api(client, monkeypatch):
     patch_retrieval(monkeypatch, result)
 
     monkeypatch.setattr(
-        query,
-        "GeminiClient",
-        lambda: FakeLLMClient(...),
+    query,
+    "GeminiClient",
+    lambda: FakeLLMClient(
+        error=LLMTimeoutError("timed out")
+    ),
     )
 
     response = client.post(
