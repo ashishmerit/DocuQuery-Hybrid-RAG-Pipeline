@@ -66,6 +66,46 @@ Cross-encoder reranking maintained the hybrid pipeline's perfect scores but did 
 
 Reranking introduces additional computational latency, which should be considered when optimizing the pipeline.
 
+## LLM Configuration
+
+DocuQuery uses Google Gemini for evidence-grounded answer generation.
+
+The application communicates with Gemini through its REST API using HTTPX.
+No provider-specific SDK is required.
+
+### Environment Variables
+
+Configure the following variables in `backend/.env`:
+
+| Variable | Description | Default |
+|---|---|---|
+| GEMINI_API_KEY | Google Gemini API key | Required |
+| GEMINI_BASE_URL | Gemini API base URL | Google API v1beta |
+| GEMINI_MODEL | Gemini model identifier | gemini-2.5-flash |
+| LLM_TIMEOUT_SECONDS | Request timeout | 30 |
+| LLM_MAX_TOKENS | Maximum generated tokens | 900 |
+| GENERATION_TOP_K | Retrieved passages for generation | 5 |
+
+### Gemini API Key
+
+1. Open https://aistudio.google.com/apikey
+2. Create or obtain a Gemini API key.
+3. Add it to `backend/.env`.
+4. Restart the FastAPI backend.
+
+Never commit `.env` or expose your API key in frontend code.
+
+### Answer Generation
+
+The application uses the existing hybrid retrieval and cross-encoder
+reranking pipeline to select contextual passages.
+
+Retrieved passages are assigned source identifiers such as S1 and S2.
+Gemini generates a structured JSON response containing the answer,
+citation identifiers, and insufficient-evidence flag.
+
+The backend resolves citation identifiers to actual document chunks
+and returns document names, page numbers, chunk IDs, and excerpts.
 
 
 ## Architecture today

@@ -30,6 +30,40 @@ export default function App() {
     }
   }
 
+  
+  async function handleQuestion(event) {
+    event.preventDefault()
+
+    if (!result?.document_id) {
+      setQueryError('Upload a PDF before asking a question.')
+      return
+    }
+
+    if (!question.trim()) {
+      setQueryError('Enter a question.')
+      return
+    }
+
+    setQueryLoading(true)
+    setQueryError('')
+    setQueryResult(null)
+
+    try {
+      const answer = await queryDocument({
+        question: question.trim(),
+        documentId: result.document_id,
+      })
+
+      setQueryResult(answer)
+    } catch (err) {
+      console.error('Query error:', err)
+      setQueryError(err.message || 'Unable to generate an answer.')
+    } finally {
+      setQueryLoading(false)
+    }
+  }
+
+
   return (
     <main className="page-shell">
       <nav className="topbar"><a className="brand" href="#top"><span className="brand-mark">D</span> DocuQuery</a><span className="topbar-note">DOCUMENT INTELLIGENCE</span></nav>
@@ -122,34 +156,3 @@ export default function App() {
     </main>
   )
 }
-
-  async function handleQuestion(event) {
-    event.preventDefault()
-
-    if (!result?.document_id) {
-      setQueryError('Upload a PDF before asking a question.')
-      return
-    }
-
-    if (!question.trim()) {
-      setQueryError('Enter a question.')
-      return
-    }
-
-    setQueryLoading(true)
-    setQueryError('')
-    setQueryResult(null)
-
-    try {
-      const answer = await queryDocument({
-        question: question.trim(),
-        documentId: result.document_id,
-      })
-
-      setQueryResult(answer)
-    } catch (err) {
-      setQueryError(err.message || 'Unable to generate an answer.')
-    } finally {
-      setQueryLoading(false)
-    }
-  }
